@@ -31,50 +31,80 @@ const MYJD = 'myjd';
 const MYJD_NORMAL = require('./images/tabs/tabBar_myJD_normal.png');
 const MYJD_SELECTED = require('./images/tabs/tabBar_myJD_press.png');
 
-const HomePage: () => React$Node = () => {
-    state = {
-        selectedTab: HOME
+
+class HomePage extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {selectedTab: HOME}
     }
 
-    var _renderTabItem = function(img, selectedImg, tag, childView) {
+    _renderTabItem(img, selectedImg, tag, childView) {
         return (
-            <TouchableOpacity  onPress={() => state.selectedTab = tag}  activeOpacity={0.2} focusedOpacity={0.5}>
+            <TouchableOpacity  onPress={() => this.setState({selectedTab: tag})}  activeOpacity={0.2} focusedOpacity={0.5}>
                 <Image
-                    source={state.selectedTab === tag?selectedImg:img}>
+                    source={this.state.selectedTab === tag?selectedImg:img}>
                 </Image>
             </TouchableOpacity>
         );
     }
     
-    var _createChildView = function(tag) {
+    _createChildView(tag) {
         return (
             <View style={{flex:1,backgroundColor:'#00baff',alignItems:'center',justifyContent:'center'}}>
                 <Text style={{fontSize:22}}>{tag}</Text>
             </View>
         )
     }
-
-    return (
-        <>
-        <StatusBar barStyle="dark-content" />
-        <HomeHeader/>
-        <ScrollView>
-            <HomeMain/>
-        </ScrollView>
-        <View style={styles.tab}>
-            {_renderTabItem(HOME_NORMAL, HOME_SELECTED, HOME, _createChildView(HOME))}
-            {_renderTabItem(CATEGORY_NORMAL, CATEGORY_SELECTED, CATEGORY, _createChildView(CATEGORY))}
-            {_renderTabItem(ME_NORMAL, ME_SELECTED, ME, _createChildView(ME))}
-            {_renderTabItem(CART_NORMAL, CART_SELECTED, CART, _createChildView(CART))}
-            {_renderTabItem(MYJD_NORMAL, MYJD_SELECTED, MYJD, _createChildView(MYJD))}
-        </View>
-        </>
-    );
-};
+    _handleScroll(e) {
+        this.setState({offset:e.nativeEvent.contentOffset.y})
+    }
+    render() {
+        return (
+            <View style={styles.container} >
+                <StatusBar barStyle="dark-content" />
+                <ScrollView 
+                    style={styles.main}
+                    scrollEventThrottle={100}
+                    onScroll={this._handleScroll.bind(this)}>
+                    
+                    <HomeMain/>
+                </ScrollView>
+                <HomeHeader 
+                    style={styles.header} 
+                    offset={this.state.offset ?? 0}
+                     />
+                <View style={styles.tab}>
+                    {this._renderTabItem(HOME_NORMAL, HOME_SELECTED, HOME, this._createChildView(HOME))}
+                    {this._renderTabItem(CATEGORY_NORMAL, CATEGORY_SELECTED, CATEGORY, this._createChildView(CATEGORY))}
+                    {this._renderTabItem(ME_NORMAL, ME_SELECTED, ME, this._createChildView(ME))}
+                    {this._renderTabItem(CART_NORMAL, CART_SELECTED, CART, this._createChildView(CART))}
+                    {this._renderTabItem(MYJD_NORMAL, MYJD_SELECTED, MYJD, this._createChildView(MYJD))}
+                </View>
+            </View>
+        );
+    }
+}
 
 const styles = StyleSheet.create({
+    container: {
+        width: '100%',
+        height: '100%'
+    },
+    header: {
+        position: 'absolute',
+        left: 0, top: 0, right: 0
+    },
+    main: {
+        position: 'absolute',
+        width: '100%',
+        height: '100%'
+    },
     tab: {
+        position: 'absolute',
         height: 52,
+        bottom: 0,
+        width: '100%',
         backgroundColor: 'white',
         flexDirection: 'row',
         justifyContent: 'space-between',

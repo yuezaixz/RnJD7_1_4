@@ -32,26 +32,41 @@ export function ifIphoneX(iphoneXStyle, iosStyle, androidStyle) {
     }
 }
 
+function addZero(num){
+    if(parseInt(num) < 10){
+        num = '0'+num;
+    }
+    return num;
+}
+
 class HomeHeader extends Component {
+
+  _isOpacity() {
+    return this.props.offset >= 90
+  }
+
   render() {
+    let messageImg = this._isOpacity()?<Image style={styles.headerBtnImage} source={require('./images/header/MenuIconMessage_Black.png')}/>:<Image style={styles.headerBtnImage} source={require('./images/header/MenuIconMessage_White.png')}/>
+    let scanImg = this._isOpacity()?<Image style={styles.headerBtnImage} source={require('./images/header/JDMainPage_icon_scan02.png')}/>:<Image style={styles.headerBtnImage} source={require('./images/header/JDMainPage_icon_scan.png')}/>
+    let searchImg = this._isOpacity()?<Image source={require('./images/header/search.png')} style={styles.searchIcon}/>: <Image source={require('./images/header/icon-search.png')} style={styles.searchIcon}/>
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, {backgroundColor: '#FFFFFF' + addZero(Math.max(0, Math.min(parseInt(this.props.offset*255/90), 255))).toString(16).toUpperCase() }]}>
         <View style={styles.searchRow} >
-          <View style={styles.headerBtn}>
-            <Image style={styles.headerBtnImage} source={require('./images/header/JDMainPage_icon_scan.png')}/>
-            <Text style={styles.headerBtnText}>扫啊扫</Text>
+          <View style={this._isOpacity()?styles.headerBtnOpacity: styles.headerBtn}>
+            {scanImg}
+            <Text style={this._isOpacity()?styles.headerBtnDarkText: styles.headerBtnText}>扫啊扫</Text>
           </View>
-          <View style={styles.searchBox}>
-            <Image source={require('./images/header/icon-search.png')} style={styles.searchIcon}/>
+          <View style={[styles.searchBox, this._isOpacity()?{backgroundColor: '#AAAAAA'}:{}]}>
+            {searchImg}
             <TextInput
                 keyboardType='web-search'
                 placeholder='iPhone11系列至高减700'
                 style={styles.inputText}/>
             <Image source={require('./images/header/cat_JDMainPage_icon_voiceHelper.png')} style={styles.voiceIcon}/>
           </View>
-          <View style={styles.headerBtn}>
-            <Image style={styles.headerBtnImage} source={require('./images/header/MenuIconMessage_White.png')}/>
-            <Text style={styles.headerBtnText}>消息</Text>
+          <View style={this._isOpacity()?styles.headerBtnOpacity: styles.headerBtn}>
+            {messageImg}
+            <Text style={this._isOpacity()?styles.headerBtnDarkText: styles.headerBtnText}>消息</Text>
           </View>
         </View>
       </View>
@@ -65,8 +80,7 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         paddingRight: 10,
         paddingTop: StatusBarManager.HEIGHT,   // 处理iOS状态栏
-        height: 130,   // 处理iOS状态栏
-        backgroundColor: '#d74047',
+        height: 90,   // 处理iOS状态栏
         alignItems: 'center'
     },
     searchRow: {
@@ -88,9 +102,22 @@ const styles = StyleSheet.create({
       flexDirection: 'column',
       alignItems: 'center',
     },
+    headerBtnOpacity: {
+      height: 36,
+      width: 36,
+      borderRadius: 18,
+      backgroundColor: 'transparent',
+      flexDirection: 'column',
+      alignItems: 'center',
+
+    },
     headerBtnText: {
       fontSize: 8,
       color: 'white'
+    },
+    headerBtnDarkText: {
+      fontSize: 8,
+      color: 'black'
     },
     headerBtnImage: {
         marginTop: 3,
