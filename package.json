@@ -11,9 +11,7 @@
   },
   "dependencies": {
     "react": "16.11.0",
-    "react-native": "0.62.0",
-    "react-native-tab-navigator": "^0.3.4",
-    "react-native-viewpager": "^0.2.13"
+    "react-native": "0.62.0"
   },
   "devDependencies": {
     "@babel/core": "7.9.0",
